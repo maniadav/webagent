@@ -6,6 +6,7 @@ This is a starter template for building AI agents using [LangGraph](https://www.
 
 - Node.js 18+ 
 - Python 3.8+
+- Poetry 2+
 - Any of the following package managers:
   - [pnpm](https://pnpm.io/installation) (recommended)
   - npm
@@ -114,5 +115,5 @@ If you see "I'm having trouble connecting to my tools", make sure:
 If you encounter Python import errors:
 ```bash
 cd agent
-pip install -r requirements.txt
+poetry lock && poetry install
 ```

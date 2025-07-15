@@ -13,6 +13,7 @@ from langgraph.graph import StateGraph, END
 from langgraph.types import Command
 from langgraph.graph import MessagesState
 from langgraph.prebuilt import ToolNode
+from langgraph.checkpoint.memory import MemorySaver
 
 class AgentState(MessagesState):
     """
@@ -99,4 +100,5 @@ workflow.add_node("tool_node", ToolNode(tools=tools))
 workflow.add_edge("tool_node", "chat_node")
 workflow.set_entry_point("chat_node")
 
-graph = workflow.compile()
+checkpointer = MemorySaver()
+graph = workflow.compile(checkpointer=checkpointer)
