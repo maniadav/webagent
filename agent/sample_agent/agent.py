@@ -5,7 +5,9 @@ It defines the workflow graph, state, tools, nodes and edges.
 
 from typing import Any, List
 from typing_extensions import Literal
+import os
 from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage
 from langchain_core.runnables import RunnableConfig
 from langchain.tools import tool
@@ -58,7 +60,17 @@ async def chat_node(state: AgentState, config: RunnableConfig) -> Command[Litera
     """
 
     # 1. Define the model
-    model = ChatOpenAI(model="gpt-4o")
+    llm_provider = os.getenv("LLM_PROVIDER", "openai").lower()
+    if llm_provider == "groq":
+        model = ChatGroq(
+            model="llama3-70b-8192",  # or another Groq-supported model
+            groq_api_key=os.getenv("GROQ_API_KEY"),
+        )
+    else:
+        model = ChatOpenAI(
+            model="gpt-4o",
+            api_key=os.getenv("OPENAI_API_KEY"),
+        )
 
     # 2. Bind the tools to the model
     model_with_tools = model.bind_tools(
@@ -67,10 +79,6 @@ async def chat_node(state: AgentState, config: RunnableConfig) -> Command[Litera
             get_weather,
             # your_tool_here
         ],
-
-        # 2.1 Disable parallel tool calls to avoid race conditions,
-        #     enable this for faster performance if you want to manage
-        #     the complexity of running tool calls in parallel.
         parallel_tool_calls=False,
     )
 
