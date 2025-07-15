@@ -95,6 +95,46 @@ The main UI component is in `src/app/page.tsx`. You can:
 - [Next.js Documentation](https://nextjs.org/docs) - Learn about Next.js features and API
 - [YFinance Documentation](https://pypi.org/project/yfinance/) - Financial data tools
 
+## System Architecture
+
+This project consists of two main components: the **Next.js frontend** and the **LangGraph agent backend**. The communication and workflow are as follows:
+
+### 1. Frontend (Next.js)
+- The frontend UI is built with Next.js and CopilotKit, providing an interactive interface for users.
+- User actions (such as chat messages or tool requests) are sent to the backend via the `/api/copilotkit` API route.
+
+### 2. API Route (`/api/copilotkit`)
+- Implemented in `src/app/api/copilotkit/route.ts`.
+- Uses CopilotKit's runtime and integrates with the LangGraph agent via the `LangGraphHttpAgent`.
+- Forwards user requests to the agent backend (default: `http://localhost:8123`).
+
+### 3. Agent Backend (LangGraph)
+- The agent is defined in `agent/sample_agent/agent.py` using LangGraph and LangChain.
+- It processes incoming requests, manages state, and can invoke tools (e.g., `get_weather`).
+- The agent uses an LLM (OpenAI or Groq) to generate responses, optionally calling tools as needed.
+- The agent's workflow is defined as a graph, with nodes for chat, tool invocation, and state management.
+
+### 4. Response Flow
+- The agent returns a response to the API route, which then forwards it back to the frontend.
+- The frontend displays the agent's response to the user in the UI.
+
+#### Diagram
+```mermaid
+graph TD
+  A[User (Frontend)] -->|Sends message| B[Next.js API Route (/api/copilotkit)]
+  B -->|Forwards request| C[LangGraph Agent Backend]
+  C -->|Processes, may call tools| C
+  C -->|Returns response| B
+  B -->|Forwards response| A
+```
+
+#### Key Files
+- **Frontend UI:** `src/app/page.tsx`
+- **API Route:** `src/app/api/copilotkit/route.ts`
+- **Agent Logic:** `agent/sample_agent/agent.py`
+
+This architecture allows for easy extension of both the frontend and agent capabilities, supporting multi-agent setups, custom tools, and advanced workflows.
+
 ## Contributing
 
 Feel free to submit issues and enhancement requests! This starter is designed to be easily extensible.

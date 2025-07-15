@@ -1,7 +1,7 @@
 "use client";
 
 import { useCoAgent, useCopilotAction } from "@copilotkit/react-core";
-import { CopilotKitCSSProperties, CopilotSidebar } from "@copilotkit/react-ui";
+import { CopilotKitCSSProperties, CopilotPopup } from "@copilotkit/react-ui";
 import { useState } from "react";
 
 export default function CopilotKitPage() {
@@ -29,7 +29,7 @@ export default function CopilotKitPage() {
       }
     >
       <YourMainContent themeColor={themeColor} />
-      <CopilotSidebar
+      <CopilotPopup
         clickOutsideToClose={false}
         defaultOpen={true}
         labels={{
