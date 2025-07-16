@@ -22,7 +22,7 @@ add_langgraph_fastapi_endpoint(
         description="An example agent to use as a starting point for your own agent.",
         graph=graph
     ),
-    path="/"
+    path="/geovision"
 )
 
 def main():
